@@ -9,9 +9,11 @@ import tornado.web
 from tornado.options import define, options
 define("port", default=8000, help="run on the given port", type=int)
 
+
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
         self.render('index.html')
+
 
 class MungedPageHandler(tornado.web.RequestHandler):
     def map_by_first_letter(self, text):
@@ -26,14 +28,16 @@ class MungedPageHandler(tornado.web.RequestHandler):
         text_to_change = self.get_argument('change')
         source_map = self.map_by_first_letter(source_text)
         change_lines = text_to_change.split('\r\n')
-        self.render('munged.html', source_map=source_map, change_lines=change_lines, choice=random.choice)
+        self.render('munged.html', source_map=source_map,
+                    change_lines=change_lines, choice=random.choice)
+
 
 if __name__ == "__main__":
     tornado.options.parse_command_line()
     app = tornado.web.Application(handlers=[
         (r'/', IndexHandler),
         (r'/poem', MungedPageHandler)
-        ],
+    ],
         template_path=os.path.join(os.path.dirname(__file__), "templates"),
         static_path=os.path.join(os.path.dirname(__file__), "static"),
         debug=True
